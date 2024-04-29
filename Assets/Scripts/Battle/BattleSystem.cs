@@ -112,7 +112,7 @@ public class BattleSystem : MonoBehaviour
         yield return playerHud.UpdateHP();
         yield return ShowDamageDetails(damageDetails);
 
-
+// if the Pokemon has fainted, display a message stating so
         if (damageDetails.Fainted)
         {
             yield return dialogBox.TypeDialog($"{playerUnit.Pokemon.Base.Name} Fainted");
@@ -164,6 +164,7 @@ public class BattleSystem : MonoBehaviour
     // our list is oriented top -> down so 0 is the top most option and 1 is the bottom most
     void HandleActionSelection()
     {
+    // Press down key to move down the menu
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             if(currentAction < 1)
@@ -180,7 +181,8 @@ public class BattleSystem : MonoBehaviour
         }
 
         dialogBox.UpdateActionSelection(currentAction);
-
+// press Z key to select
+// the player can either run or fight
         if (Input.GetKeyDown(KeyCode.Z))
         {
             if (currentAction == 0) 
