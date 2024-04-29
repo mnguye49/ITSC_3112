@@ -106,7 +106,7 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-// for the opponet's turn
+// for the opponent's turn
     IEnumerator EnemyMove()
     {
     // set state to the opponent's turn
@@ -114,13 +114,16 @@ public class BattleSystem : MonoBehaviour
         // randomly select a move from their moveset
         var move = enemyUnit.Pokemon.GetRandomMove();
 
+// display that the opponent is using a move
         yield return dialogBox.TypeDialog($"{enemyUnit.Pokemon.Base.Name} used {move.Base.Name}");
 
+// Play attack and hit animation for the opponent and player respectively
         enemyUnit.PlayAttackAnimation();
         yield return new WaitForSeconds(1f);
 
         playerUnit.PlayHitAnimation();
 
+// Have the player's Pokemon take damage and update the HUD accordingly
         var damageDetails = playerUnit.Pokemon.TakeDamage(move, enemyUnit.Pokemon);
         yield return playerHud.UpdateHP();
         yield return ShowDamageDetails(damageDetails);
@@ -134,14 +137,17 @@ public class BattleSystem : MonoBehaviour
             yield return new WaitForSeconds(2f);
             OnBattleOver(false);
         }
+        // otherwise move onto the player's turn
         else
         {
             PlayerAction();
         }
     }
 
+// This method displays the information regarding a Pokemon after it gets hit
     IEnumerator ShowDamageDetails(DamageDetails damageDetails)
     {
+       // Display a message if a hit is critical and/oor if the move was supereffective or not 
         if (damageDetails.Critical > 1f)
         {
             yield return dialogBox.TypeDialog("A critical hit!");
@@ -160,6 +166,7 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+// Handle actions whether a player is choosing what to do or what move to use
     public void HandleUpdate()
     {
         if (state == BattleState.PlayerAction)
