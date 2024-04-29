@@ -8,7 +8,7 @@ public enum BattleState { Start, PlayerAction, PlayerMove, EnemyMove, Busy}
 
 public class BattleSystem : MonoBehaviour
 {
-
+// fields
     [SerializeField] BattleUnit playerUnit;
     [SerializeField] BattleHud playerHud;
 
@@ -23,6 +23,7 @@ public class BattleSystem : MonoBehaviour
     int currentAction;
     int currentMove;
 
+// Initiate the battle
     public void StartBattle()
     {
         StartCoroutine(SetupBattle());
@@ -56,6 +57,7 @@ public class BattleSystem : MonoBehaviour
         dialogBox.EnableActionSelector(true);
     }
 
+// set the BattleState to the player's turn
     void PlayerMove()
     {
         state = BattleState.PlayerMove;
@@ -68,19 +70,26 @@ public class BattleSystem : MonoBehaviour
     IEnumerator PerformPlayerMove()
     {
         state = BattleState.Busy;
+        // Decrease the move PP by 1 after it is used
         playerUnit.Pokemon.Moves[currentMove].PP -= 1;
         var move = playerUnit.Pokemon.Moves[currentMove];
+        
+        // Display on HUD that the player's Pokemon used the move
         yield return dialogBox.TypeDialog($"{playerUnit.Pokemon.Base.Name} used {move.Base.Name}");
 
+       // Play attack animation
         playerUnit.PlayAttackAnimation();
         yield return new WaitForSeconds(1f);
 
+        // Play the opponent's hit animation
         enemyUnit.PlayHitAnimation();
 
+       // Have opponent take damage and update their HP accordingly
         var damageDetails = enemyUnit.Pokemon.TakeDamage(move, playerUnit.Pokemon);
         yield return enemyHud.UpdateHP();
         yield return ShowDamageDetails(damageDetails);
 
+        // If the opponent has fainted, display a message saying so
         if (damageDetails.Fainted)
         {
             yield return dialogBox.TypeDialog($"{enemyUnit.Pokemon.Base.Name} Fainted");
@@ -90,15 +99,19 @@ public class BattleSystem : MonoBehaviour
             OnBattleOver(true);
 
         }
+        // if the opponent has not fainted yet, start their turn
         else
         {
             StartCoroutine(EnemyMove());
         }
     }
 
+// for the opponet's turn
     IEnumerator EnemyMove()
     {
+    // set state to the opponent's turn
         state = BattleState.EnemyMove;
+        // randomly select a move from their moveset
         var move = enemyUnit.Pokemon.GetRandomMove();
 
         yield return dialogBox.TypeDialog($"{enemyUnit.Pokemon.Base.Name} used {move.Base.Name}");
