@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
     // we changed this to HandleUpdate so that we can manually call the function instead of it being automatically called every frame
     public void HandleUpdate()
     {
+    // if the player isn't currently moving, move them based on user input
         if (!isMoving)
         {
             input.x = Input.GetAxisRaw("Horizontal");
@@ -33,6 +34,7 @@ public class PlayerController : MonoBehaviour
             // prevents diagonal movement
             if (input.x != 0) input.y = 0;
 
+// set the target position based on the direction the player is moving
             if (input != Vector2.zero)
             {
                 animator.SetFloat("moveX", input.x);
@@ -41,6 +43,7 @@ public class PlayerController : MonoBehaviour
                 targetPos.x += input.x;
                 targetPos.y += input.y;
 
+// if the tile can be walked on, allow the player to move there
                 if (IsWalkable(targetPos) == true)
                 {
                     StartCoroutine(Move(targetPos));
@@ -50,10 +53,12 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("isMoving", isMoving);
     }
 
+// this  is the method that moves the player to target position
     IEnumerator Move(Vector3 targetPos)
     {
         isMoving = true;
 
+// while the target position hasn't been reached yet, move thr player
         while ((targetPos - transform.position).sqrMagnitude > Mathf.Epsilon)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
@@ -67,6 +72,7 @@ public class PlayerController : MonoBehaviour
         CheckForEncounters(targetPos);
     }
 
+// This method checks if a tile can be walked on
     private bool IsWalkable(Vector3 targetPos)
     {
         // checks for solid object at target position
@@ -79,7 +85,8 @@ public class PlayerController : MonoBehaviour
         }
         return true;
     }
-    
+
+    // This method checks for random encounters
     private void CheckForEncounters(Vector3 targetPos)
     { 
         if (Physics2D.OverlapCircle(targetPos, 0.2f, GrassLayer) != null)
