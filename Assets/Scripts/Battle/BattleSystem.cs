@@ -172,6 +172,7 @@ public class BattleSystem : MonoBehaviour
                 ++currentAction;
             }
         }
+        // press up key to move up the menu
         else if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             if (currentAction > 0)
@@ -200,7 +201,7 @@ public class BattleSystem : MonoBehaviour
 
     void HandleMoveSelection()
     {
-        // down arrow
+        // down arrow to move down the move menu
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             if (currentMove < playerUnit.Pokemon.Moves.Count - 2)
@@ -209,7 +210,7 @@ public class BattleSystem : MonoBehaviour
             }
         }
 
-        // up arrow
+        // up arrow to move up the move menu
         else if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             if (currentMove > 1)
@@ -218,7 +219,7 @@ public class BattleSystem : MonoBehaviour
             }
         }
 
-        // left arrow
+        // left arrow to go to the move on the left
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             if (currentMove > 0)
@@ -227,7 +228,7 @@ public class BattleSystem : MonoBehaviour
             }
         }
 
-        // right arrow
+        // right arrow to go to the move on the right
         else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             if (currentMove < playerUnit.Pokemon.Moves.Count - 1)
@@ -236,8 +237,10 @@ public class BattleSystem : MonoBehaviour
             }
         }
 
+        // display on the HUD the move being selected
         dialogBox.UpdateMoveSelection(currentMove, playerUnit.Pokemon.Moves[currentMove]);
 
+// press the Z key to choose the move
         if (Input.GetKeyDown(KeyCode.Z))
         {
             dialogBox.EnableMoveSelector(false);
